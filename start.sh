@@ -55,14 +55,13 @@ sudo systemctl restart mysql
 # Asegurarse de que el usuario y la base de datos MySQL existan
 echo "Asegurando que el usuario y la base de datos MySQL existan..."
 MYSQL_USER="root"
-MYSQL_PASSWORD="yourpassword"
-MYSQL_DATABASE="mydatabase"
+MYSQL_DATABASE="notes"
 
 # Crear la base de datos si no existe
-mysql -u${MYSQL_USER} -p -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
 # Asignar privilegios al usuario
-mysql -u${MYSQL_USER} -p -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-mysql -u${MYSQL_USER} -p -e "FLUSH PRIVILEGES;"
+sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+sudo mysql -u${MYSQL_USER} -e "FLUSH PRIVILEGES;"
 
 # Crear el archivo .env si no existe
 if [ ! -f backend/.env ]; then
@@ -71,8 +70,8 @@ if [ ! -f backend/.env ]; then
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=mydatabase
+DB_PASSWORD=
+DB_NAME=notes
 
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=super^Secret!009
