@@ -2,15 +2,6 @@
 
 set -e
 
-# Función para verificar la instalación de un paquete y, si no está instalado, instalarlo
-check_install_package() {
-  if ! command -v $1 &> /dev/null; then
-    echo "$1 no encontrado. Instalando $1..."
-    sudo apt update
-    sudo apt install -y $2
-  fi
-}
-
 # Instalación de dependencias
 echo "Instalando dependencias necesarias..."
 
