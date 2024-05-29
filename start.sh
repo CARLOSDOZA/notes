@@ -2,46 +2,69 @@
 
 set -e
 
-# Instalación de dependencias
-echo "Instalando dependencias necesarias..."
+# Verificación e instalación de Go 1.22.2 si no está instalado
+echo "Verificando la instalación de Go..."
 
-# Instalar Go si no está instalado
-check_install_package go golang-go
+if ! command -v go &> /dev/null; then
+  echo "Go no encontrado. Instalando Go 1.22.2..."
+  wget -q https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
+  sudo tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz
+  rm go1.22.2.linux-amd64.tar.gz
+  export PATH=$PATH:/usr/local/go/bin
+fi
 
-# Instalar Node.js y npm si no están instalados
-check_install_package nodejs nodejs
-check_install_package npm npm
+echo "Versión de Go:"
+go version
 
-# Instalar MySQL si no está instalado
-check_install_package mysql mysql-server
+# Verificación e instalación de Node.js v18.16.0 si no está instalado
+echo "Verificando la instalación de Node.js..."
 
-# Iniciar MySQL y asegurarse de que esté en ejecución
+if ! command -v node &> /dev/null; then
+  echo "Node.js no encontrado. Instalando Node.js v18.16.0..."
+  curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  sudo apt-get install -y nodejs
+fi
+
+echo "Versión de Node.js:"
+node --version
+npm --version
+
+# Asegurarse de que MySQL esté instalado y en funcionamiento
+echo "Verificando la instalación de MySQL..."
+
+if ! command -v mysql &> /dev/null; then
+  echo "MySQL no encontrado. Instalando MySQL..."
+  sudo apt install -y mysql-server
+  sudo systemctl start mysql
+  sudo systemctl enable mysql
+fi
+
+# Verificar el estado de MySQL y asegurarse de que esté en ejecución
 echo "Verificando el estado del servicio MySQL..."
-sudo systemctl start mysql
-sudo systemctl enable mysql
+if ! systemctl is-active --quiet mysql; then
+  echo "El servicio MySQL no está en ejecución. Iniciando MySQL..."
+  sudo systemctl start mysql
+else
+  echo "El servicio MySQL está en ejecución."
+fi
 
-# Configurar MySQL
-echo "Configurando MySQL..."
-sudo mysql_secure_installation <<EOF
+echo "Verificando la configuración de enlace del servidor MySQL..."
+sudo sed -i 's/^bind-address\s*=.*/bind-address = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo systemctl restart mysql
 
-n
-y
-y
-y
-y
-EOF
-
-# Crear la base de datos y el usuario MySQL
-echo "Creando la base de datos y el usuario MySQL..."
+# Asegurarse de que el usuario y la base de datos MySQL existan
+echo "Asegurando que el usuario y la base de datos MySQL existan..."
 MYSQL_USER="root"
 MYSQL_PASSWORD="yourpassword"
 MYSQL_DATABASE="mydatabase"
 
-sudo mysql -u root -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-sudo mysql -u root -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
-sudo mysql -u root -e "FLUSH PRIVILEGES;"
+# Crear la base de datos si no existe
+mysql -u${MYSQL_USER} -p -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
+# Asignar privilegios al usuario
+mysql -u${MYSQL_USER} -p -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+mysql -u${MYSQL_USER} -p -e "FLUSH PRIVILEGES;"
 
-# Crear el archivo de configuración .env si no existe
+# Crear el archivo .env si no existe
 if [ ! -f backend/.env ]; then
   echo "Creando el archivo .env..."
   cat <<EOT >> backend/.env
@@ -60,10 +83,13 @@ fi
 # Exportar variables de entorno
 export $(grep -v '^#' backend/.env | xargs)
 
-# Instalar dependencias del backend y configurar la base de datos
-echo "Instalando dependencias del backend y configurando la base de datos..."
+# Instalar dependencias del backend
+echo "Instalando dependencias del backend..."
 cd backend
 go mod tidy
+
+# Configurar la base de datos
+echo "Configurando la base de datos..."
 go run main.go migrate
 
 # Instalar dependencias del frontend
@@ -75,9 +101,14 @@ npm install
 echo "Compilando el frontend..."
 npm run build
 
-# Iniciar la aplicación
-echo "Iniciando la aplicación..."
+# Iniciar servidor backend
+echo "Iniciando el servidor backend..."
 cd ../backend
 go run main.go &
 
-echo "Aplicación iniciada correctamente."
+# Iniciar servidor frontend
+echo "Iniciando el servidor frontend..."
+cd ../frontend
+npm run dev &
+
+echo "Aplicación iniciada correctamente. Backend ejecutándose en el puerto 8000 y frontend en el puerto 5173."
