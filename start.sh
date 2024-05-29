@@ -62,6 +62,9 @@ sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
 # Asignar privilegios al usuario
 sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';"
 sudo mysql -u${MYSQL_USER} -e "FLUSH PRIVILEGES;"
+sudo mysql -u${MYSQL_USER} -e "USE mysql;"
+sudo mysql -u${MYSQL_USER} -e "UPDATE user SET plugin='mysql_native_password' WHERE User='root';"
+sudo service mysql restart
 
 # Crear el archivo .env si no existe
 if [ ! -f backend/.env ]; then

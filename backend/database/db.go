@@ -2,10 +2,10 @@ package database
 
 import (
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"os"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 var Db *gorm.DB
@@ -23,10 +23,11 @@ func connectDB() *gorm.DB {
 	dbname := os.Getenv("DB_NAME")
 	port := os.Getenv("DB_PORT")
 
-	dsn := fmt.Sprintf("%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, host, port, dbname)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Error connecting to database:%v", err)
+		log.Fatal("Error connecting to database:", err)
+		return nil
 	}
 	log.Println("Successfully connected to the database")
 
