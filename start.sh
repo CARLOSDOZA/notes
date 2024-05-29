@@ -101,12 +101,14 @@ npm install
 echo "Compilando el frontend..."
 npm run build
 
-# Iniciar servidor backend en una nueva terminal
+# Iniciar servidor backend
 echo "Iniciando el servidor backend..."
-gnome-terminal -- bash -c "cd backend; go run main.go; exec bash"
+cd ../backend
+go run main.go &
 
-# Iniciar servidor frontend en una nueva terminal
+# Iniciar servidor frontend
 echo "Iniciando el servidor frontend..."
-gnome-terminal -- bash -c "cd frontend; npm install; npm run dev; exec bash"
+cd ../frontend
+npm run dev &
 
 echo "Aplicación iniciada correctamente. Backend ejecutándose en el puerto 8000 y frontend en el puerto 5173."
