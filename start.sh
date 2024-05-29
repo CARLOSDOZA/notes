@@ -60,7 +60,7 @@ MYSQL_DATABASE="notes"
 # Crear la base de datos si no existe
 sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
 # Asignar privilegios al usuario
-sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost' IDENTIFIED BY '${MYSQL_PASSWORD}';"
+sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';"
 sudo mysql -u${MYSQL_USER} -e "FLUSH PRIVILEGES;"
 
 # Crear el archivo .env si no existe
