@@ -92,10 +92,6 @@ echo "Instalando dependencias del backend..."
 cd backend
 go mod tidy
 
-# Configurar la base de datos
-echo "Configurando la base de datos..."
-go run main.go migrate
-
 # Instalar dependencias del frontend
 echo "Instalando dependencias del frontend..."
 cd ../frontend
@@ -105,14 +101,12 @@ npm install
 echo "Compilando el frontend..."
 npm run build
 
-# Iniciar servidor backend
+# Iniciar servidor backend en una nueva terminal
 echo "Iniciando el servidor backend..."
-cd ../backend
-go run main.go &
+gnome-terminal -- bash -c "cd backend; go run main.go; exec bash"
 
-# Iniciar servidor frontend
+# Iniciar servidor frontend en una nueva terminal
 echo "Iniciando el servidor frontend..."
-cd ../frontend
-npm run dev &
+gnome-terminal -- bash -c "cd frontend; npm install; npm run dev; exec bash"
 
 echo "Aplicación iniciada correctamente. Backend ejecutándose en el puerto 8000 y frontend en el puerto 5173."
