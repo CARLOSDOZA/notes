@@ -19,7 +19,7 @@ EOT
 fi
 
 
-export $(cat backend/.env | xargs)
+export $(grep -v '^#' backend/.env | xargs)
 
 
 echo "Installing backend dependencies..."
