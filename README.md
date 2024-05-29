@@ -118,8 +118,8 @@ Ensure you have a `.env` file in the `backend` directory with the following vari
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
-DB_PASSWORD=yourpassword
-DB_NAME=mydatabase
+DB_PASSWORD=
+DB_NAME=notes
 ```
 
 # Default Admin User
