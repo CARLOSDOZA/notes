@@ -1,4 +1,4 @@
-import React, { createContext, useReducer } from 'react';
+import React, { createContext } from 'react';
 
 // Define el tipo para el estado de carga
 type LoadingState = {

@@ -21,7 +21,7 @@ function App() {
   const [dateFilter, setDateFilter] = useState<Date | null>(null);
   const [categoryFilter, setCategoryFilter] = useState(0);
   const [archivedFilter, setArchivedFilter] = useState(false);
-  const [showNoteForm, setShowNoteForm] = useState(false);
+  const [, setShowNoteForm] = useState(false);
   const [sortOrder, setSortOrder] = useState<SortOrder>('date-asc');  // Estado para el ordenamiento
   const [authLoaded, setAuthLoaded] = useState(false);
   if (!auth) {
