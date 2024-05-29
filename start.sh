@@ -2,10 +2,6 @@
 
 set -e
 
-# Limpiar y actualizar los repositorios
-echo "Limpiando y actualizando repositorios..."
-sudo apt update
-
 # Verificación e instalación de Go 1.22.2 si no está instalado
 echo "Verificando la instalación de Go..."
 
