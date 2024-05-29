@@ -15,18 +15,12 @@ import (
 )
 
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "migrate" {
-		loadEnv()
-		loadDatabase()
-		seedDatabase()
-		fmt.Println("Database migration and seeding completed.")
-		return
-	}
-
 	// load environment file
 	loadEnv()
 	// load database configuration and connection
 	loadDatabase()
+	// load seed
+	seedDatabase()
 	// start the server
 	serveApplication()
 }
