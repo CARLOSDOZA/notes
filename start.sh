@@ -33,10 +33,6 @@ echo "Versión de Node.js:"
 node --version
 npm --version
 
-# Importar la clave GPG de AdoptOpenJDK
-echo "Importando la clave GPG de AdoptOpenJDK..."
-wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add -
-
 # Asegurarse de que MySQL esté instalado y en funcionamiento
 echo "Verificando la instalación de MySQL..."
 
