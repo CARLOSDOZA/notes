@@ -57,13 +57,15 @@ echo "Asegurando que el usuario y la base de datos MySQL existan..."
 MYSQL_USER="root"
 MYSQL_DATABASE="notes"
 
-# Crear la base de datos si no existe
-sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
-# Asignar privilegios al usuario
+# Crear la base de datos si no existe y seleccionarla
+sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE}; USE ${MYSQL_DATABASE};"
+# Asignar privilegios al usuario en la base de datos seleccionada
 sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';"
 sudo mysql -u${MYSQL_USER} -e "FLUSH PRIVILEGES;"
-sudo mysql -u${MYSQL_USER} -e "USE mysql;"
-sudo mysql -u${MYSQL_USER} -e "UPDATE user SET plugin='mysql_native_password' WHERE User='root';"
+
+# Actualizar el plugin de autenticación si es necesario
+sudo mysql -u${MYSQL_USER} -e "UPDATE mysql.user SET plugin='mysql_native_password' WHERE User='root';"
+# Reiniciar el servicio MySQL para aplicar los cambios
 sudo service mysql restart
 
 # Crear el archivo .env si no existe
