@@ -2,6 +2,10 @@
 
 set -e
 
+# Limpiar y actualizar los repositorios
+echo "Limpiando y actualizando repositorios..."
+sudo apt update
+
 # Verificación e instalación de Go 1.22.2 si no está instalado
 echo "Verificando la instalación de Go..."
 
@@ -39,11 +43,14 @@ if ! command -v mysql &> /dev/null; then
   sudo systemctl enable mysql
 fi
 
+# Verificar el estado de MySQL y asegurarse de que esté en ejecución
 echo "Verificando el estado del servicio MySQL..."
-sudo systemctl status mysql || {
+if ! systemctl is-active --quiet mysql; then
   echo "El servicio MySQL no está en ejecución. Iniciando MySQL..."
   sudo systemctl start mysql
-}
+else
+  echo "El servicio MySQL está en ejecución."
+fi
 
 echo "Verificando la configuración de enlace del servidor MySQL..."
 sudo sed -i 's/^bind-address\s*=.*/bind-address = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -92,18 +99,4 @@ echo "Instalando dependencias del frontend..."
 cd ../frontend
 npm install
 
-# Compilar el frontend
-echo "Compilando el frontend..."
-npm run build
-
-# Iniciar servidor backend
-echo "Iniciando el servidor backend..."
-cd ../backend
-go run main.go &
-
-# Iniciar servidor frontend
-echo "Iniciando el servidor frontend..."
-cd ../frontend
-npm run dev &
-
-echo "Aplicación iniciada correctamente. Backend ejecutándose en el puerto 8000 y frontend en el puerto 5173."
+# Compilar el
