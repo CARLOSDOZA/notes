@@ -4,14 +4,14 @@ set -e
 if [ ! -f backend/.env ]; then
   echo "Creating .env file..."
   cat <<EOT >> backend/.env
-# Database configuration
+
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=yourpassword
 DB_NAME=mydatabase
 
-# Default Admin User
+
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=super^Secret!009
 EOT
