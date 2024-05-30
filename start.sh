@@ -2,75 +2,86 @@
 
 set -e
 
-# Verificación e instalación de Go 1.22.2 si no está instalado
-echo "Verificando la instalación de Go..."
+# Check and install Go 1.22.2 if not installed
+echo "Checking Go installation..."
 
 if ! command -v go &> /dev/null; then
-  echo "Go no encontrado. Instalando Go 1.22.2..."
+  echo "Go not found. Installing Go 1.22.2..."
   wget -q https://golang.org/dl/go1.22.2.linux-amd64.tar.gz
   sudo tar -C /usr/local -xzf go1.22.2.linux-amd64.tar.gz
   rm go1.22.2.linux-amd64.tar.gz
   export PATH=$PATH:/usr/local/go/bin
 fi
 
-echo "Versión de Go:"
+echo "Go version:"
 go version
 
-# Verificación e instalación de Node.js v18.16.0 si no está instalado
-echo "Verificando la instalación de Node.js..."
+# Check and install Node.js v18.16.0 if not installed
+echo "Checking Node.js installation..."
 
 if ! command -v node &> /dev/null; then
-  echo "Node.js no encontrado. Instalando Node.js v18.16.0..."
-  curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+  echo "Node.js not found. Installing Node.js..."
   sudo apt-get install -y nodejs
 fi
 
-echo "Versión de Node.js:"
+# Check and install npm 8.19.3
+echo "Checking npm installation..."
+
+if ! command -v npm &> /dev/null; then
+  echo "npm not found. Installing npm 8.19.3..."
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+  source ~/.nvm/nvm.sh
+  nvm install 18
+  nvm use 18
+fi
+
+echo "Node.js version:"
 node --version
+echo "npm version:"
 npm --version
 
-# Asegurarse de que MySQL esté instalado y en funcionamiento
-echo "Verificando la instalación de MySQL..."
+# Ensure MySQL is installed and running
+echo "Checking MySQL installation..."
 
 if ! command -v mysql &> /dev/null; then
-  echo "MySQL no encontrado. Instalando MySQL..."
+  echo "MySQL not found. Installing MySQL..."
   sudo apt install -y mysql-server
   sudo systemctl start mysql
   sudo systemctl enable mysql
 fi
 
-# Verificar el estado de MySQL y asegurarse de que esté en ejecución
-echo "Verificando el estado del servicio MySQL..."
+# Check MySQL service status and ensure it is running
+echo "Checking MySQL service status..."
 if ! systemctl is-active --quiet mysql; then
-  echo "El servicio MySQL no está en ejecución. Iniciando MySQL..."
+  echo "MySQL service is not running. Starting MySQL..."
   sudo systemctl start mysql
 else
-  echo "El servicio MySQL está en ejecución."
+  echo "MySQL service is running."
 fi
 
-echo "Verificando la configuración de enlace del servidor MySQL..."
+echo "Checking MySQL server bind address configuration..."
 sudo sed -i 's/^bind-address\s*=.*/bind-address = 127.0.0.1/' /etc/mysql/mysql.conf.d/mysqld.cnf
 sudo systemctl restart mysql
 
-# Asegurarse de que el usuario y la base de datos MySQL existan
-echo "Asegurando que el usuario y la base de datos MySQL existan..."
+# Ensure MySQL user and database exist
+echo "Ensuring MySQL user and database exist..."
 MYSQL_USER="root"
 MYSQL_DATABASE="notes"
 
-# Crear la base de datos si no existe y seleccionarla
+# Create the database if it does not exist and select it
 sudo mysql -u${MYSQL_USER} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE}; USE ${MYSQL_DATABASE};"
-# Asignar privilegios al usuario en la base de datos seleccionada
+# Grant privileges to the user on the selected database
 sudo mysql -u${MYSQL_USER} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'localhost';"
 sudo mysql -u${MYSQL_USER} -e "FLUSH PRIVILEGES;"
 
-# Actualizar el plugin de autenticación si es necesario
+# Update the authentication plugin if necessary
 sudo mysql -u${MYSQL_USER} -e "UPDATE mysql.user SET plugin='mysql_native_password' WHERE User='root';"
-# Reiniciar el servicio MySQL para aplicar los cambios
+# Restart the MySQL service to apply changes
 sudo service mysql restart
 
-# Crear el archivo .env si no existe
+# Create the .env file if it does not exist
 if [ ! -f backend/.env ]; then
-  echo "Creando el archivo .env..."
+  echo "Creating the .env file..."
   cat <<EOT >> backend/.env
 DB_HOST=localhost
 DB_PORT=3306
@@ -80,35 +91,38 @@ DB_NAME=notes
 
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=super^Secret!009
+
+TOKEN_TTL="1800"
+JWT_PRIVATE_KEY="2k18c3Cco1^q"
 EOT
-  echo "Archivo .env creado exitosamente."
+  echo ".env file created successfully."
 fi
 
-# Exportar variables de entorno
+# Export environment variables
 export $(grep -v '^#' backend/.env | xargs)
 
-# Instalar dependencias del backend
-echo "Instalando dependencias del backend..."
+# Install backend dependencies
+echo "Installing backend dependencies..."
 cd backend
 go mod tidy
 
-# Instalar dependencias del frontend
-echo "Instalando dependencias del frontend..."
+# Install frontend dependencies
+echo "Installing frontend dependencies..."
 cd ../frontend
 npm install
 
-# Compilar el frontend
-echo "Compilando el frontend..."
+# Build the frontend
+echo "Building the frontend..."
 npm run build
 
-# Iniciar servidor backend
-echo "Iniciando el servidor backend..."
+# Start backend server
+echo "Starting backend server..."
 cd ../backend
 go run main.go &
 
-# Iniciar servidor frontend
-echo "Iniciando el servidor frontend..."
+# Start frontend server
+echo "Starting frontend server..."
 cd ../frontend
 npm run dev &
 
-echo "Aplicación iniciada correctamente. Backend ejecutándose en el puerto 8000 y frontend en el puerto 5173."
+echo "Application started successfully. Backend running on port 8000 and frontend on port 5173."

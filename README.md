@@ -83,20 +83,27 @@ This project consists of a simple web application that allows user to take notes
 
 ## Installation and Setup
 
-1. Clone the repository:
+1. Upgrade packages:
+
+    ```sh
+    sudo apt-get update
+    sudo apt install curl
+    ```
+
+2. Clone the repository:
 
     ```sh
     git clone https://github.com/ensolvers-github-challenges/Doza-5116a2.git
     cd Doza-5116a2
     ```
 
-2. Make the setup script executable:
+3. Make the setup script executable:
 
     ```sh
     chmod +x start.sh
     ```
 
-3. Run the setup script:
+4. Run the setup script:
 
     ```sh
     ./start.sh
