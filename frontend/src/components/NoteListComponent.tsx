@@ -29,47 +29,47 @@ export default function NoteListComponent({
     const fetchNotes = async () => {
       try {
         const allNotes = await getAllUserNotes(userId);
-
+  
         // Filter notes according to the provided filters
         const filteredNotes = allNotes.filter((note: NoteItem) => {
           const nameMatches = nameFilter
-            ? note.title.toLowerCase().includes(nameFilter.toLowerCase())
+            ? note.Title?.toLowerCase().includes(nameFilter.toLowerCase())
             : true;
           const dateMatches = dateFilter
             ? new Date(note.UpdatedAt || note.CreatedAt).toDateString() === dateFilter.toDateString()
             : true;
-          const statusMatches = archivedFilter !== undefined ? note.archived === archivedFilter : true;
-          const categoryMatches = categoryFilter ? note.category_id === categoryFilter : true;
-
+          const statusMatches = archivedFilter !== undefined ? note.Archived === archivedFilter : true;
+          const categoryMatches = categoryFilter ? note.CategoryID === categoryFilter : true;
+  
           return nameMatches && dateMatches && statusMatches && categoryMatches;
         });
-
+  
         // Sort the notes according to sortOrder
-        const sortedNotes = filteredNotes.sort((a: { UpdatedAt: any; CreatedAt: any; title: string; }, b: { UpdatedAt: any; CreatedAt: any; title: string; }) => {
+        const sortedNotes = filteredNotes.sort((a: { UpdatedAt: any; CreatedAt: any; Title: any; }, b: { UpdatedAt: any; CreatedAt: any; Title: any; }) => {
           const dateA = new Date(a.UpdatedAt || a.CreatedAt).getTime();
           const dateB = new Date(b.UpdatedAt || b.CreatedAt).getTime();
-
+  
           switch (sortOrder) {
             case 'date-asc':
               return dateA - dateB;
             case 'date-desc':
               return dateB - dateA;
             case 'title-asc':
-              return a.title.localeCompare(b.title);
+              return (a.Title || '').localeCompare(b.Title || '');
             case 'title-desc':
-              return b.title.localeCompare(a.title);
+              return (b.Title || '').localeCompare(a.Title || '');
             default:
               return 0;
           }
         });
-
+  
         setNoteItems(sortedNotes);
       } catch (error) {
         console.error('Error fetching notes:', error);
         // Handle API call errors here if needed
       }
     };
-
+  
     // Only fetch notes if the user is logged in
     if (loggedIn) {
       fetchNotes();
@@ -78,6 +78,7 @@ export default function NoteListComponent({
       setNoteItems([]);
     }
   }, [nameFilter, dateFilter, archivedFilter, categoryFilter, sortOrder, loggedIn, userId]);
+  
 
   return (
     <div className='overflow-y-scroll max-h-[29rem]'>

@@ -5,7 +5,6 @@ type AuthProviderProps = {
     children: ReactNode;
 };
 
-// Define el proveedor de contexto de autenticación
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [authState, dispatch] = useReducer(authReducer, {
         loggedIn: false,
@@ -22,5 +21,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     );
 };
 
-// Define un hook personalizado para acceder al contexto de autenticación
 export const useAuth = () => useContext(AuthContext);

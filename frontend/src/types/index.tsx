@@ -1,39 +1,39 @@
 export type Login = {
-    username: string,
-    password: string
+    Username: string,
+    Password: string
 }
 
 export type Register = {
-    username: string,
-    email: string,
-    password: string,
+    Username: string,
+    Email: string,
+    Password: string,
 }
 
 export type Category = {
     ID: number,
-    name: string,
+    Name: string,
 }
 
 export type NoteForm = {
-    id?: number
-    title: string,
-    content: string,
-    category_id: number,
-    user_id?: number,
+    ID?: number
+    Title: string,
+    Content: string,
+    CategoryID: number,
+    UserID?: number,
 }
 
 export type CategoryForm = {
-    name: string,
-    user_id: number,
+    Name: string,
+    UserID: number,
 }
 
 export type NoteItem = {
     ID: number,
-    title: string,
-    content: string,
-    category_id: number,
-    user_id: number,
-    archived: boolean,
+    Title: string,
+    Content: string,
+    CategoryID: number,
+    UserID: number,
+    Archived: boolean,
     CreatedAt: Date,
     UpdatedAt: Date
 }

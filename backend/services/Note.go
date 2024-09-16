@@ -1,38 +1,98 @@
 package services
 
 import (
-	"backend/database"
 	"backend/models"
+	"errors"
+
+	"gorm.io/gorm"
 )
 
-// Get User Notes
-func GetNote(note *models.Note, id int) (err error) {
-	err = database.Db.Where("id = ?", id).First(note).Error
+
+
+func CreateNoteService(input models.NoteForm) (*models.Note, error) {
+
+	note := models.Note{
+		Title:      input.Title,
+		Content:    input.Content,
+		CategoryID: input.CategoryID,
+		UserID:     input.UserID,
+	}
+
+	savedNote, err := note.Save()
+	if err != nil {
+		return nil, err
+	}
+
+	return savedNote, nil
+}
+
+func GetUserNotesService(userID int) (*models.Notes, error) {
+	var notes models.Notes
+
+	err := models.GetUserNotes(&notes, userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+		return nil, err
+	}
+
+	return &notes, nil
+}
+
+func UpdateNoteService(id int, updatedNote *models.Note) error {
+	var existingNote models.Note
+	err := models.GetNote(&existingNote, id)
 	if err != nil {
 		return err
 	}
+
+	existingNote.Title = updatedNote.Title
+	existingNote.Content = updatedNote.Content
+	existingNote.CategoryID = updatedNote.CategoryID
+	existingNote.UserID = updatedNote.UserID
+
+	err = models.UpdateNote(&existingNote)
+	if err != nil {
+		return err 
+	}
+
 	return nil
 }
 
-// Get User Notes
-func GetUserNotes(notes *models.Notes, id int) (err error) {
-	err = database.Db.Where("user_id = ?", id).Find(notes).Error
+func ArchiveNoteService(id int) (*models.Note, error) {
+	var note models.Note
+	err := models.GetNote(&note, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
+		return nil, err
+	}
+
+	note.Archived = !note.Archived
+
+	_, err = note.Save()
+	if err != nil {
+		return nil, err
+	}
+
+	return &note, nil
+}
+
+func DeleteNoteService(id int) error {
+	var note models.Note
+	err := models.GetNote(&note, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+		return err
+	}
+	err = models.DeleteNote(&note)
 	if err != nil {
 		return err
 	}
-	return nil
-}
 
-// Update user
-func UpdateNote(Note *models.Note) (err error) {
-	err = database.Db.Omit("user_id").Updates(Note).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func DeleteNote(Note *models.Note) (err error) {
-	database.Db.Delete(Note)
 	return nil
 }

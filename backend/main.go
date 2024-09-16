@@ -15,13 +15,9 @@ import (
 )
 
 func main() {
-	// load environment file
 	loadEnv()
-	// load database configuration and connection
 	loadDatabase()
-	// load seed
 	seedDatabase()
-	// start the server
 	serveApplication()
 }
 
@@ -42,7 +38,6 @@ func loadDatabase() {
 }
 
 func seedDatabase() {
-	// Seed the database with initial data
 	err := SeedAdminUser()
 	if err != nil {
 		log.Fatalf("Error seeding admin user: %v", err)
@@ -60,7 +55,6 @@ func seedDatabase() {
 }
 
 func SeedAdminUser() error {
-	// Seed admin user from .env
 	adminUsername := os.Getenv("ADMIN_USERNAME")
 	adminPassword := os.Getenv("ADMIN_PASSWORD")
 
@@ -71,11 +65,10 @@ func SeedAdminUser() error {
 
 	adminUser := models.User{
 		Username: adminUsername,
-		Email:    "admin@example.com", // Adjust email as needed
+		Email:    "admin@example.com",
 		Password: string(hashedPassword),
 	}
 
-	// Save admin user to the database
 	result := database.Db.Create(&adminUser)
 	if result.Error != nil {
 		return result.Error
@@ -88,14 +81,13 @@ func SeedCategories() error {
 
 	category1 := models.Category{
 		Name:   "Personal",
-		UserID: 1, // Assuming admin user ID is 1 (adjust as per your seeding logic)
+		UserID: 1,
 	}
 	category2 := models.Category{
 		Name:   "Work",
 		UserID: 1,
 	}
 
-	// Save categories to the database
 	err := database.Db.Create(&category1).Error
 	if err != nil {
 		return err
@@ -113,20 +105,19 @@ func SeedNotes() error {
 
 	note1 := models.Note{
 		Title:      "First Note",
-		Content:    "This is the content of the first note",
-		CategoryID: 1, // Assuming category ID 1 (adjust as per your seeding logic)
-		UserID:     1, // Assuming admin user ID 1 (adjust as per your seeding logic)
+		Content:    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consequat auctor risus, quis ultrices nibh scelerisque eu. Sed vitae faucibus turpis. Mauris vitae convallis nisl. Nullam eu ante id nisl aliquet molestie. Vestibulum eu tristique ipsum. Integer eu blandit tellus, non rhoncus est. Mauris et tortor vel quam euismod consequat. Nullam tempor a lorem ac condimentum.",
+		CategoryID: 1, 
+		UserID:     1, 
 		Archived:   false,
 	}
 	note2 := models.Note{
 		Title:      "Work Meeting",
-		Content:    "Prepare agenda and discussion points",
-		CategoryID: 2, // Assuming category ID 2 (adjust as per your seeding logic)
-		UserID:     1, // Assuming admin user ID 1 (adjust as per your seeding logic)
+		Content:    "Phasellus eu gravida ex. Aliquam consectetur magna at purus sodales, eu iaculis massa vehicula. In non ligula vehicula, scelerisque dolor ac, volutpat nisi. Morbi cursus, lectus nec efficitur eleifend, massa ligula convallis felis, quis facilisis nunc velit nec nisi. ",
+		CategoryID: 2,
+		UserID:     1,
 		Archived:   false,
 	}
 
-	// Save notes to the database
 	err := database.Db.Create(&note1).Error
 	if err != nil {
 		return err
@@ -141,10 +132,8 @@ func SeedNotes() error {
 }
 
 func serveApplication() {
-	// Create Gin router
 	router := gin.Default()
 
-	// Apply CORS middleware
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{"*"}                                       // Allow requests from any origin
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}            // Allow certain HTTP methods

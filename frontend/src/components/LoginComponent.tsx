@@ -18,7 +18,7 @@ export default function LoginComponent({ setShowRegister }: ModalProps) {
 
     const { dispatch } = auth;
 
-    const [formData, setFormData] = useState<Login>({ username: "", password: "" });
+    const [formData, setFormData] = useState<Login>({ Username: "", Password: "" });
     const [loginError, setLoginError] = useState('');
 
     const handleRegister = () => {

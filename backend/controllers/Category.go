@@ -6,7 +6,6 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -14,7 +13,7 @@ import (
 func GetUserCategories(context *gin.Context) {
 	var Categories models.Categories
 	id, _ := strconv.Atoi(context.Param("id"))
-	err := services.GetUserCategories(&Categories, id)
+	err := services.GetUserCategoriesService(&Categories, id)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			context.AbortWithStatus(http.StatusNotFound)
@@ -34,17 +33,11 @@ func CreateCategory(context *gin.Context) {
 		return
 	}
 
-	category := models.Category{
-		Name:   input.Name,
-		UserID: input.UserID,
-	}
-
-	savedNote, err := category.Save()
+	savedCategory, err := services.CreateCategoryService(input)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"postulation": savedNote})
-
+	context.JSON(http.StatusCreated, gin.H{"category": savedCategory})
 }

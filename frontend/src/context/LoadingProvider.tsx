@@ -5,7 +5,6 @@ type LoadingProviderProps = {
     children: ReactNode;
 };
 
-// Define el proveedor de contexto de autenticación
 export const LoadingProvider = ({ children }: LoadingProviderProps) => {
     const [loadingState, dispatch] = useReducer(loadingReducer, {
         loading: false,
@@ -18,5 +17,4 @@ export const LoadingProvider = ({ children }: LoadingProviderProps) => {
     );
 };
 
-// Define un hook personalizado para acceder al contexto de autenticación
 export const useAuth = () => useContext(LoadingContext);

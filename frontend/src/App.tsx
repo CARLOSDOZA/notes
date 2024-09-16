@@ -22,7 +22,7 @@ function App() {
   const [categoryFilter, setCategoryFilter] = useState(0);
   const [archivedFilter, setArchivedFilter] = useState(false);
   const [, setShowNoteForm] = useState(false);
-  const [sortOrder, setSortOrder] = useState<SortOrder>('date-asc');  // Estado para el ordenamiento
+  const [sortOrder, setSortOrder] = useState<SortOrder>('date-asc'); 
   const [authLoaded, setAuthLoaded] = useState(false);
   if (!auth) {
     return <div>Error: Contexto de autenticación no disponible</div>;
@@ -59,10 +59,9 @@ function App() {
 
   const handleSortOrderChange = (order: SortOrder) => {
     setSortOrder(order);
-    // Aquí puedes implementar la lógica para ordenar las notas según el valor de order
   };
   if (!authLoaded) {
-    return <div>Cargando autenticación...</div>; // Muestra un mensaje de carga mientras se completa la autenticación
+    return <div>Cargando autenticación...</div>;
   }
   return (
     <>

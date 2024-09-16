@@ -7,8 +7,8 @@ export default function CategoryFormComponent() {
     const auth = useAuth();
     // State to manage form data and categories
     const [formData, setFormData] = useState<CategoryForm>({
-        name: '',
-        user_id: auth?.authState.id || 0,
+        Name: '',
+        UserID: auth?.authState.id || 0,
     });
 
     // Handle input change
@@ -40,9 +40,9 @@ export default function CategoryFormComponent() {
                 <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Name</label>
                 <input
                     type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
+                    id="Name"
+                    name="Name"
+                    value={formData.Name}
                     onChange={handleInputChange}
                     className="w-full p-2 border border-gray-300 rounded-md"
                     required

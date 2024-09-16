@@ -1,6 +1,6 @@
 package models
 
 type CategoryForm struct {
-	Name   string `json:"name" binding:"required"`
-	UserID uint   `json:"user_id"`
+	Name   string `json:"Name" binding:"required"`
+	UserID uint   `json:"UserID"`
 }

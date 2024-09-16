@@ -17,10 +17,10 @@ export default function NoteFormComponent({ note, isUpdate }: FormJobProps) {
 
     // State to manage form data and categories
     const [formData, setFormData] = useState<NoteForm>({
-        user_id: auth?.authState.id || 0,
-        category_id: note ? note.category_id : 0,
-        title: note ? note.title : '',
-        content: note ? note.content : ''
+        UserID: auth?.authState.id || 0,
+        CategoryID: note ? note.CategoryID : 0,
+        Title: note ? note.Title : '',
+        Content: note ? note.Content : ''
     });
     const [categories, setCategories] = useState<Category[]>([]);
 
@@ -43,8 +43,7 @@ export default function NoteFormComponent({ note, isUpdate }: FormJobProps) {
         const { name, value } = e.target;
 
         // Convert the value to a number if necessary
-        const numValue = name === 'category_id' ? Number(value) : value;
-
+        const numValue = e.target.name === 'CategoryID' ? Number(e.target.value) : value;
         setFormData(prevState => ({
             ...prevState,
             [name]: numValue
@@ -80,9 +79,9 @@ export default function NoteFormComponent({ note, isUpdate }: FormJobProps) {
                         <label htmlFor="title" className="block text-gray-700 font-bold mb-2">Title</label>
                         <input
                             type="text"
-                            id="title"
-                            name="title"
-                            value={formData.title}
+                            id="Title"
+                            name="Title"
+                            value={formData.Title}
                             onChange={handleStringChange}
                             className="w-full p-2 border border-gray-300 rounded-md"
                             required
@@ -91,9 +90,9 @@ export default function NoteFormComponent({ note, isUpdate }: FormJobProps) {
                     <div className="mb-4">
                         <label htmlFor="content" className="block text-gray-700 font-bold mb-2">Content</label>
                         <textarea
-                            id="content"
-                            name="content"
-                            value={formData.content}
+                            id="Content"
+                            name="Content"
+                            value={formData.Content}
                             onChange={handleStringChange}
                             className="w-full p-2 border border-gray-300 rounded-md h-48"
                             required
@@ -101,15 +100,15 @@ export default function NoteFormComponent({ note, isUpdate }: FormJobProps) {
                     </div>
                     <div className="flex items-center">
                         <select
-                            id="category_id"
-                            name="category_id"
+                            id="CategoryID"
+                            name="CategoryID"
                             onChange={handleStringChange}
                             className="w-full p-2 border border-gray-300 rounded-md"
                             required
                         >
-                            <option value={0} disabled>Select a category</option>
+                            <option value={0}>Select a category</option>
                             {categories.map((cat) => (
-                                <option key={cat.ID} value={cat.ID} className='text-black'>{cat.name}</option>
+                                <option key={cat.ID} value={cat.ID} className='text-black'>{cat.Name}</option>
                             ))}
                         </select>
 

@@ -31,7 +31,6 @@ export default function FilterComponent({ setJobNameFilter, setDateFilter, setAr
         const fetchCategories = async () => {
             try {
                 const response = await getAllUserCategories(userId);
-                console.log(response)
                 setCategories(response);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -84,15 +83,15 @@ export default function FilterComponent({ setJobNameFilter, setDateFilter, setAr
                 </label>
                 <div className="flex items-center">
                     <select
-                        id="category_id"
-                        name="category_id"
+                        id="CategoryID"
+                        name="CategoryID"
                         onChange={handleCategoryChange}
                         className="w-full p-2 border border-gray-300 rounded-md"
                         required
                     >
-                        <option value={0} disabled>Select a category</option>
+                        <option value={0}>Select a category</option>
                         {categories.map((cat) => (
-                            <option key={cat.ID} value={cat.ID} className='text-black'>{cat.name}</option>
+                            <option key={cat.ID} value={cat.ID} className='text-black'>{cat.Name}</option>
                         ))}
                     </select>
                     <ToolTipComponent tooltip="Add Category">

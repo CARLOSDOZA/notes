@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { Login, Register } from '../types';
 
-const API_URL = 'http://localhost:8000'; // URL de tu backend
+const API_URL = 'http://localhost:8000'; 
 
 export const Auth = async (token: string | null) => {
 
-    // Obtén el token JWT del local storage
     const config = {
         headers: {
-            Authorization: `Bearer ${token}`, // Pasar el token JWT en el encabezado de autorización
+            Authorization: `Bearer ${token}`,
         },
     };
     try {

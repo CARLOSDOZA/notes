@@ -31,7 +31,6 @@ func connectDB() *gorm.DB {
 	}
 	log.Println("Successfully connected to the database")
 
-	// Verificar si la base de datos existe
 	sqlDB, err := db.DB()
 	if err != nil {
 		log.Fatal("Error getting DB object:", err)
@@ -45,7 +44,6 @@ func connectDB() *gorm.DB {
 	}
 	defer rows.Close()
 
-	// Si la base de datos no existe, crear el schema
 	if !rows.Next() {
 		log.Println("Database does not exist, creating schema...")
 		err = sqlDB.Ping()
@@ -62,7 +60,6 @@ func connectDB() *gorm.DB {
 		log.Println("Database created successfully")
 	}
 
-	// Conectarse a la base de datos especificada
 	dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", username, password, host, port, dbname)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {

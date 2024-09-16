@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// check for valid admin token
 func JWTAuth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		err := ValidateJWT(context)
@@ -17,7 +16,6 @@ func JWTAuth() gin.HandlerFunc {
 	}
 }
 
-// check for valid customer token
 func JWTAuthUser() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		err := ValidateJWT(context)

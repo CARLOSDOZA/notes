@@ -8,9 +8,9 @@ type ModalProps = {
 
 export default function RegisterComponent({ setShowRegister }: ModalProps) {
   const [formData, setFormData] = useState<Register>({
-    username: '',
-    email: '',
-    password: ''
+    Username: '',
+    Email: '',
+    Password: ''
   });
   const [registerError, setRegisterError] = useState('');
 
